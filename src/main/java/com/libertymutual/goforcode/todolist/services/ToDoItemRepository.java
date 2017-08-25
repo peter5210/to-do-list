@@ -1,4 +1,3 @@
-// ToDoItemRepository.java
 package com.libertymutual.goforcode.todolist.services;
 
 import java.io.FileNotFoundException;
@@ -31,22 +30,26 @@ public class ToDoItemRepository {
 
 		items.clear();
 
-		try (FileReader in = new FileReader("C:\\Users\\N0116605\\dev\\to-do-list\\items.csv");
-				)
+		try (FileReader in = new FileReader("items.csv"))
 		{
 			Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
 			for (CSVRecord record : records) {
 				ToDoItem newItem = new ToDoItem();
+
 				int idToInt = Integer.parseInt(record.get(0));
 				Boolean isCompleteAsBoolean = Boolean.valueOf(record.get(2));
-
+				
 				newItem.setId(idToInt);
 				newItem.setText(record.get(1));
 				newItem.setComplete(isCompleteAsBoolean);
-
 				items.add(newItem);
-
+				
+				if (idToInt >= nextId) {
+					nextId = idToInt + 1;
+				}
+				
 			}
+
 		} catch (FileNotFoundException e) {
 			System.out.println("Could not find the file");
 		} catch (IOException e) {
@@ -65,7 +68,7 @@ public class ToDoItemRepository {
 	 */
 	public void create(ToDoItem item) throws IOException {
 
-		String outputFile = "C:\\Users\\N0116605\\dev\\to-do-list\\items.csv";
+		String outputFile = "items.csv";
 		CSVFormat csvFileFormat = CSVFormat.EXCEL;
 		FileWriter fileWriter = new FileWriter(outputFile, true);
 		CSVPrinter csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
@@ -111,7 +114,7 @@ public class ToDoItemRepository {
 	public void update(ToDoItem item) {
 
 		CSVFormat csvFileFormat = CSVFormat.EXCEL;
-		try (FileWriter updateFile = new FileWriter("C:\\Users\\N0116605\\dev\\to-do-list\\items.csv");
+		try (FileWriter updateFile = new FileWriter("items.csv");
 				CSVPrinter csvFilePrinter = new CSVPrinter(updateFile, csvFileFormat))
 		{	
 
